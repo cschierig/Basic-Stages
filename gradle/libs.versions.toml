@@ -1,0 +1,46 @@
+[versions]
+minecraft = "1.20.6"
+
+minotaur = "2.+"
+parchment = "2024.05.01"
+
+fabric_loom = "1.6-SNAPSHOT"
+fabric_loader = "0.15.+"
+fabric_api = "0.99.0+1.20.6"
+
+neoforge_gradle = "7.0.+"
+neoforge_mdk = "[20.6,)"
+
+mixin = "0.8.5"
+
+architectury_api = "12.1.2"
+architectury_loom = "1.6-SNAPSHOT"
+architectury_plugin = "3.4-SNAPSHOT"
+shadow = "8.1.1"
+
+junit = "5.10.+"
+
+[libraries]
+minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
+
+fabric_loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric_loader" }
+fabric_loader_junit = { module = "net.fabricmc:fabric-loader-junit", version.ref = "fabric_loader" }
+fabric_api = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabric_api" }
+
+architectury_common = { module = "dev.architectury:architectury", version.ref = "architectury_api" }
+architectury_fabric = { module = "dev.architectury:architectury-fabric", version.ref = "architectury_api" }
+architectury_neoforge = { module = "dev.architectury:architectury-neoforge", version.ref = "architectury_api" }
+
+mixin = { module = "org.spongepowered:mixin", version.ref = "mixin" }
+
+junit_jupiter_api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
+junit_jupiter_engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
+
+[plugins]
+fabric_loom = { id = "fabric-loom", version.ref = "fabric_loom" }
+neoforge_gradle = { id = "net.neoforged.gradle.userdev", version.ref = "neoforge_gradle" }
+minotaur = { id = "com.modrinth.minotaur", version.ref = "minotaur" }
+
+architectury_loom = { id = "dev.architectury.loom", version.ref = "architectury_loom" }
+architectury_plugin = { id = "architectury-plugin", version.ref = "architectury_plugin" }
+shadow = { id = 'com.github.johnrengelman.shadow', version.ref = "shadow" }

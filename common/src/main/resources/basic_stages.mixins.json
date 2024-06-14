@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "refmap": "${modId}.refmap.json",
+  "package": "${modGroup}.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+  ],
+  "client": [
+    "client.RenderChunkMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

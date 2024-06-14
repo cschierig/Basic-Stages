@@ -1,0 +1,39 @@
+# Gradle
+.gradle/
+build/
+out/
+classes/
+
+# Fabric Loom
+remappedSrc/
+run/
+.cache/
+
+# Neoforge
+runs/
+
+# Eclipse
+*.launch
+
+# IntelliJ Idea
+.idea/
+*.iml
+*.ipr
+*.iws
+.run/
+
+# Fleet
+.fleet/
+
+# Visual Studio Code
+.settings/
+.vscode/
+bin/
+.classpath
+.project
+
+# Eclipse JDT LS
+workspace/
+
+# macOS
+*.DS_Store

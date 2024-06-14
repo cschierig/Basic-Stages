@@ -1,0 +1,8 @@
+[
+  {
+    "type": "basic_stages:block",
+    "stage": "iron",
+    "privilege": "minecraft:grass_block",
+    "replacement": "minecraft:iron_block"
+  }
+]

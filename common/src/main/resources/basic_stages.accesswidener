@@ -1,0 +1,4 @@
+accessWidener v2 named
+
+accessible class net/minecraft/client/renderer/chunk/RenderChunk
+accessible field net/minecraft/world/level/block/state/StateHolder propertiesCodec Lcom/mojang/serialization/MapCodec;

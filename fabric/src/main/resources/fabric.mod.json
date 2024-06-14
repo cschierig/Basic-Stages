@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "${modId}",
+  "name": "${modName}",
+  "description": "",
+  "contact": {
+    "sources": "https://github.com/cschierig/Basic-Stages",
+    "issues": "https://github.com/cschierig/Basic-Stages/issues"
+  },
+  "authors": [
+    "${author}"
+  ],
+  "version": "${modVersion}",
+  "icon": "assets/${modId}/icon.png",
+  "license": "${modLicense}",
+  "entrypoints": {
+    "main": [
+      "com.carlschierig.basicstages.BasicStagesFabric"
+    ],
+    "client": [
+      "com.carlschierig.basicstages.BasicStagesFabricClient"
+    ],
+    "fabric-datagen": [
+    ]
+  },
+  "mixins": [
+    "basic_stages.mixins.json"
+  ],
+  "accessWidener": "basic_stages.accesswidener",
+  "depends": {
+    "fabricloader": ">=0.14.22",
+    "minecraft": "1.20.6",
+    "java": ">=21"
+  }
+}
