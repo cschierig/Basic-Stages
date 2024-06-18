@@ -1,98 +1,74 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.gradle.kotlin.dsl.support.uppercaseFirstChar
 
 plugins {
-    java
-    idea
-    `maven-publish`
-    alias(libs.plugins.neoforge.gradle)
+    alias(libs.plugins.shadow)
     alias(libs.plugins.minotaur)
 }
 
 val modId: String by project
+val withSourcesJar = property("withSourcesJar").toString().toBoolean()
 val withApiJar = property("withApiJar").toString().toBoolean()
 val modrinthId: String by project
 val modrinthType: String by project
 
-val common = project(":common")
+val commonProject = project(":common")
+
+architectury {
+    platformSetupLoomIde()
+    neoForge()
+}
+
+val common by configurations.creating
+val shadowBundle by configurations.creating
+configurations {
+    "common" {
+        isCanBeResolved = true
+        isCanBeConsumed = false
+    }
+
+    compileClasspath.get().extendsFrom(common)
+    runtimeClasspath.get().extendsFrom(common)
+    getByName("developmentNeoForge").extendsFrom(common)
+
+    "shadowBundle" {
+        isCanBeResolved = true
+        isCanBeConsumed = false
+    }
+}
+
+repositories {
+    maven("https://maven.neoforged.net/releases") {
+        name = "NeoForged"
+    }
+}
 
 dependencies {
-    implementation("net.neoforged:neoforge:${libs.versions.neoforge.mdk.get()}")
+    neoForge(libs.neoforge.mdk)
 
-    implementation(libs.architectury.neoforge)
-
-    compileOnly(project(":common"))
+    common(project(":common", "namedElements")) { isTransitive = false }
+    shadowBundle(project(":common", "transformProductionNeoForge"))
 }
 
 sourceSets.main.get().resources.srcDir("src/generated/resources")
 
-// taken from sodium
-// NeoGradle compiles the game, but we don't want to add our common code to the game's code
-val notNeoTask: (Task) -> Boolean = { it: Task -> !it.name.startsWith("neo") && !it.name.startsWith("compileService") }
-tasks.withType<JavaCompile>().matching(notNeoTask).configureEach {
-    source(common.sourceSets.main.get().allSource)
-}
+// minecraft {
+//     val atFile = file("src/main/resources/META-INF/accesstransformer.cfg")
+//     if (atFile.exists()) {
+//         file(atFile)
+//     }
+// }
 
-tasks.withType<Javadoc>().matching(notNeoTask).configureEach {
-    source(common.sourceSets.main.get().allJava)
-}
-
-tasks.named<Jar>("sourcesJar") {
-    from(common.sourceSets.main.get().allSource)
-}
-
-tasks.withType<ProcessResources>().matching(notNeoTask).configureEach {
-    from(common.sourceSets.main.get().resources)
-}
-
-subsystems {
-    parchment {
-        minecraftVersion = libs.versions.minecraft.get()
-        mappingsVersion = libs.versions.parchment.get()
-    }
-}
-
-minecraft {
-    val atFile = file("src/main/resources/META-INF/accesstransformer.cfg")
-    if (atFile.exists()) {
-        file(atFile)
-    }
-}
-
-runs {
-    configureEach {
-        modSource(project.sourceSets.main.get())
-    }
-}
-
-if (withApiJar) {
-    tasks.register<Jar>("apiJar") {
-        archiveClassifier.set("api")
-        from(sourceSets.main.get().allSource)
-        from(sourceSets.main.get().output)
-        include("neoforge.mods.toml")
-        include("*.mixins.json")
-        include("com/carlschierig/*/api/**")
-    }
-}
-
-artifacts {
-    if (withApiJar) {
-        archives(tasks.named("apiJar"))
-    }
-    archives(tasks.named("sourcesJar"))
-}
-
-tasks.named("build") {
-    if (withApiJar) {
-        dependsOn(tasks.named("apiJar"))
-    }
-    dependsOn(tasks.named("jar"))
-    dependsOn(tasks.named("sourcesJar"))
+tasks.getByName<ShadowJar>("shadowJar") {
+    configurations = listOf(shadowBundle)
+    archiveClassifier.set("dev-shadow")
 }
 
 if (System.getenv("MODRINTH_TOKEN") != null) {
     val files = ArrayList<String>()
-    files.add("sourcesJar")
+    if (withSourcesJar) {
+        files.add("sourcesJar")
+    }
     if (withApiJar) {
         files.add("apiJar")
     }

@@ -7,7 +7,7 @@ pluginManagement {
         maven("https://maven.neoforged.net/releases") {
             name = "Neoforge"
         }
-        maven("https://files.minecraftforge.net/maven/") {
+        maven("https://maven.architectury.dev/") {
             name = "Architectury"
         }
     }

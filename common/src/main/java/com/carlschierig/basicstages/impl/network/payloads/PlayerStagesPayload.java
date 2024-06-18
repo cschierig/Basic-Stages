@@ -1,6 +1,6 @@
 package com.carlschierig.basicstages.impl.network.payloads;
 
-import com.carlschierig.basicstages.impl.BSUtil;
+import com.carlschierig.basicstages.impl.util.BSUtil;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;

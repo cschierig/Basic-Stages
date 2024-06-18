@@ -3,7 +3,7 @@ package com.carlschierig.basicstages.impl.network.payloads;
 
 import com.carlschierig.basicstages.api.privilege.Privilege;
 import com.carlschierig.basicstages.api.privilege.PrivilegeType;
-import com.carlschierig.basicstages.impl.BSUtil;
+import com.carlschierig.basicstages.impl.util.BSUtil;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;

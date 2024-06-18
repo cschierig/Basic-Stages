@@ -11,6 +11,15 @@ public abstract class S2CPackets {
 
     public abstract void sendStages(ServerPlayer player);
 
+    /**
+     * Sends a stage update to the given player.
+     *
+     * @param player The player whose stage set was updated.
+     * @param stage  The name of the stage.
+     * @param added  if {@code true}, the stage is added, otherwise it is removed.
+     */
+    public abstract void sendStageUpdate(ServerPlayer player, String stage, boolean added);
+
     public abstract void sendPrivileges();
 
     public abstract void clearPrivileges();

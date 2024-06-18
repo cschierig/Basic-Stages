@@ -1,12 +1,12 @@
 package com.carlschierig.basicstages.api.privilege;
 
 import com.carlschierig.basicstages.api.stage.StageMap;
-import com.carlschierig.basicstages.impl.BSUtil;
+import com.carlschierig.basicstages.impl.util.BSUtil;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public final class PrivilegeMap<K, V> {
     private final Map<K, Privilege<K, V>> byId = new HashMap<>();
@@ -14,9 +14,9 @@ public final class PrivilegeMap<K, V> {
     /**
      * Returns whether the given player can access the given object.
      */
-    public boolean canAccess(UUID player, K object) {
+    public boolean canAccess(Player player, K object) {
         var privilege = byId.get(object);
-        return privilege == null || StageMap.hasStage(player, privilege.stage());
+        return privilege == null || StageMap.getInstance().hasStage(player, privilege.stage());
     }
 
     /**

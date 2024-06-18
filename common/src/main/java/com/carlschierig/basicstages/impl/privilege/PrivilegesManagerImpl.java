@@ -5,8 +5,8 @@ import com.carlschierig.basicstages.api.privilege.PrivilegeMap;
 import com.carlschierig.basicstages.api.privilege.PrivilegeType;
 import com.carlschierig.basicstages.api.privilege.PrivilegesManager;
 import com.carlschierig.basicstages.api.registry.BSRegistries;
-import com.carlschierig.basicstages.impl.BSUtil;
 import com.carlschierig.basicstages.impl.network.S2CPackets;
+import com.carlschierig.basicstages.impl.util.BSUtil;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
@@ -14,10 +14,14 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
+import net.minecraft.world.entity.player.Player;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class PrivilegesManagerImpl extends PrivilegesManager implements ResourceManagerReloadListener {
     private static final Codec<List<Privilege<?, ?>>> CODEC = Codec.list(BSRegistries.PRIVILEGE_TYPE.byNameCodec().dispatch(Privilege::type, s -> s.serializer().CODEC));
@@ -45,9 +49,9 @@ public class PrivilegesManagerImpl extends PrivilegesManager implements Resource
 
     @Override
     @SuppressWarnings("unchecked")
-    public <K, V> boolean canAccessImpl(UUID player, PrivilegeType<K, V> type, K object) {
+    public <K, V> boolean canAccessImpl(Player player, PrivilegeType<K, V> type, K object) {
         var map = (PrivilegeMap<K, V>) privileges.get(type);
-        return map != null && map.canAccess(player, object);
+        return map == null || map.canAccess(player, object);
     }
 
     @Override
@@ -73,10 +77,10 @@ public class PrivilegesManagerImpl extends PrivilegesManager implements Resource
 
     @Override
     public void onResourceManagerReload(ResourceManager manager) {
+        clearImpl();
         for (var entry : manager.listResources("stages", path -> path.getPath().endsWith(".json")).entrySet()) {
             var id = entry.getKey();
             var resource = entry.getValue();
-            BSUtil.LOG.warn(id.toString());
 
             try (var reader = new InputStreamReader(resource.open())) {
                 var json = JsonParser.parseReader(reader);

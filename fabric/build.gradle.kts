@@ -1,29 +1,66 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import net.fabricmc.loom.task.RemapJarTask
 import org.gradle.kotlin.dsl.support.uppercaseFirstChar
 
 plugins {
-    idea
-    java
-    `maven-publish`
-    alias(libs.plugins.fabric.loom)
+    alias(libs.plugins.shadow)
     alias(libs.plugins.minotaur)
 }
 
 val modId: String by project
 val withApiJar = property("withApiJar").toString().toBoolean()
+val withSourcesJar = property("withSourcesJar").toString().toBoolean()
+val compatMods = property("compatMods").toString().toBoolean()
 val modrinthId: String by project
 val modrinthType: String by project
 val withExampleMod = property("withExampleMod").toString().toBoolean()
 
-val common = project(":common")
+val commonProject = project(":common")
 
-val exampleModCompileOnlyApi by configurations.creating;
-exampleModCompileOnlyApi.extendsFrom(configurations.modCompileOnlyApi.get())
+architectury {
+    platformSetupLoomIde()
+    fabric()
+}
+
+val common by configurations.creating
+val shadowBundle by configurations.creating
+configurations {
+    "common" {
+        isCanBeResolved = true
+        isCanBeConsumed = false
+    }
+
+    compileClasspath.get().extendsFrom(common)
+    runtimeClasspath.get().extendsFrom(common)
+    getByName("developmentFabric").extendsFrom(common)
+
+    "shadowBundle" {
+        isCanBeResolved = true
+        isCanBeConsumed = false
+    }
+}
+
+dependencies {
+    modImplementation(libs.fabric.loader)
+    modImplementation(libs.fabric.api)
+
+    common(project(":common", "namedElements")) { isTransitive = false }
+    shadowBundle(project(":common", "transformProductionFabric"))
+
+    modCompileOnly("dev.emi:emi-fabric:${libs.versions.emi.get()}:api")
+
+    if (compatMods) {
+        modImplementation(libs.compat.jade.fabric)
+        modImplementation(libs.compat.sodium.fabric)
+
+        modLocalRuntime("dev.emi:emi-fabric:${libs.versions.emi.get()}")
+    }
+}
 
 sourceSets {
     if (withExampleMod) {
         create("example") {
-            compileClasspath = sourceSets.main.get().compileClasspath
-            compileClasspath += exampleModCompileOnlyApi
+            compileClasspath += sourceSets.main.get().compileClasspath
             runtimeClasspath += sourceSets.main.get().runtimeClasspath
 
             resources {
@@ -41,12 +78,9 @@ sourceSets {
 }
 
 loom {
-    val awPath = common.file("src/main/resources/${modId}.accesswidener")
+    val awPath = commonProject.file("src/main/resources/${modId}.accesswidener")
     if (awPath.exists()) {
         accessWidenerPath.set(awPath)
-    }
-    mixin {
-        defaultRefmapName.set("${modId}.refmap.json")
     }
     runs {
         getByName("client") {
@@ -60,6 +94,15 @@ loom {
             configName = "Fabric Server"
             ideConfigGenerated(true)
             runDir("run/server")
+        }
+        create("datagen") {
+            inherit(getByName("client"))
+            name("Data Generation")
+            vmArg("-Dfabric-api.datagen")
+            vmArg("-Dfabric-api.datagen.output-dir=${commonProject.file("src/main/generated")}")
+            vmArg("-Dfabric-api.datagen.modid=immersive_crafting")
+
+            runDir("build/datagen")
         }
         if (withExampleMod) {
             create("example") {
@@ -86,71 +129,25 @@ loom {
                 runDir("build/exampleDatagen")
             }
         }
-        create("datagen") {
-            inherit(getByName("client"))
-            name("Data Generation")
-            vmArg("-Dfabric-api.datagen")
-            vmArg("-Dfabric-api.datagen.output-dir=${common.file("src/main/generated")}")
-            vmArg("-Dfabric-api.datagen.modid=immersive_crafting")
-
-            runDir("build/datagen")
-        }
     }
 }
 
-tasks.withType<JavaCompile>().configureEach {
-    source(common.sourceSets.main.get().allSource)
+tasks.getByName<ShadowJar>("shadowJar") {
+    configurations = listOf(shadowBundle)
+    archiveClassifier.set("dev-shadow")
 }
 
-tasks.withType<Javadoc>().configureEach {
-    source(common.sourceSets.main.get().allJava)
+tasks.withType<RemapJarTask>() {
+    inputFile.set(tasks.getByName<ShadowJar>("shadowJar").archiveFile)
+    dependsOn(tasks.getByName<ShadowJar>("shadowJar"))
 }
 
-tasks.named<Jar>("sourcesJar") {
-    from(common.sourceSets.main.get().allSource)
-}
-
-tasks.withType<ProcessResources>() {
-    from(common.sourceSets.main.get().resources)
-}
-
-if (withApiJar) {
-    tasks.register<Jar>("apiJar") {
-        archiveClassifier.set("api")
-        dependsOn(tasks.named("remapJar"))
-        from(zipTree(tasks.named("remapJar").get().outputs.files.asPath))
-        include("fabric.mod.json")
-        include("*.mixins.json")
-        include("com/carlschierig/immersivecrafting/api/**")
-    }
-
-    tasks.named("build") {
-        dependsOn(tasks.named("apiJar"))
-    }
-}
-
-dependencies {
-    minecraft(libs.minecraft)
-    mappings(loom.layered {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-${libs.versions.minecraft.get()}:${libs.versions.parchment.get()}@zip")
-    })
-
-    modImplementation(libs.fabric.loader)
-    modImplementation(libs.fabric.api)
-
-    modImplementation(libs.architectury.fabric)
-
-    implementation(project(":common"))
-
-    if (withApiJar && withExampleMod) {
-        exampleModCompileOnlyApi(tasks.getByName("apiJar").outputs.files)
-    }
-}
 
 if (System.getenv("MODRINTH_TOKEN") != null) {
     val files = ArrayList<String>()
-    files.add("sourcesJar")
+    if (withSourcesJar) {
+        files.add("sourcesJar")
+    }
     if (withApiJar) {
         files.add("apiJar")
     }
@@ -165,18 +162,13 @@ if (System.getenv("MODRINTH_TOKEN") != null) {
         additionalFiles.set(files.map { tasks.named(it) })
         syncBodyFrom.set(rootProject.file("README.md").readText())
         dependencies {
-            // required.project("fabric-api")
+            required.project("fabric-api")
+            optional.project("jade")
         }
         gameVersions.set(listOf(libs.versions.minecraft.get()))
         loaders.set(listOf("fabric", "quilt"))
         detectLoaders.set(false)
         changelog.set(file("../CHANGELOG.md").readText())
     }
-    tasks.named("modrinth") { dependsOn("runDatagen") }
-}
-
-fun api(dep: ExternalModuleDependency) {
-    dep.artifact {
-        classifier = "api"
-    }
+    //tasks.named("modrinth") { dependsOn("runDatagen") }
 }

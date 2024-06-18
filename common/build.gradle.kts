@@ -1,42 +1,18 @@
-plugins {
-    idea
-    java
-    `maven-publish`
-    alias(libs.plugins.fabric.loom)
-}
-
 val modId: String by project
+val enabledPlatforms: String by project
 
-loom {
-    val awFile = file("src/main/resources/${modId}.accesswidener")
-    if (awFile.exists()) {
-        accessWidenerPath.set(awFile)
-    }
-
-    mixin {
-        defaultRefmapName.set("${modId}.refmap.json")
-    }
-
-    addRemapConfiguration("testModImplementation") {
-        targetConfigurationName.set("test")
-        onCompileClasspath = true
-        onRuntimeClasspath = true
-    }
+architectury {
+    common(enabledPlatforms.split(','))
 }
 
 dependencies {
-    minecraft(libs.minecraft)
-    mappings(loom.layered {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-${libs.versions.minecraft.get()}:${libs.versions.parchment.get()}@zip")
-    })
+    modImplementation(libs.fabric.loader)
 
-    compileOnly(libs.mixin)
+    modImplementation(libs.compat.jade.fabric)
+    modCompileOnly("dev.emi:emi-xplat-intermediary:${libs.versions.emi.get()}:api")
 
-    modImplementation(libs.architectury.common)
-
-    configurations.getByName("testModImplementation")(libs.fabric.loader)
-    testImplementation(libs.fabric.loader.junit)
+//     "testModImplementation"(libs.fabric.loader)
+//     testImplementation(libs.fabric.loader.junit)
 }
 
 sourceSets {
@@ -48,12 +24,19 @@ sourceSets {
     }
 }
 
-tasks.withType<Test> {
-    useJUnitPlatform()
+loom {
+    val awFile = file("src/main/resources/${modId}.accesswidener")
+    if (awFile.exists()) {
+        accessWidenerPath.set(awFile)
+    }
+
+    //   addRemapConfiguration("testModImplementation") {
+    //       targetConfigurationName.set("test")
+    //       onCompileClasspath = true
+    //       onRuntimeClasspath = true
+    //   }
 }
 
-fun api(dep: ExternalModuleDependency) {
-    dep.artifact {
-        classifier = "api"
-    }
-}
+// tasks.withType<Test> {
+//     useJUnitPlatform()
+// }

@@ -21,6 +21,9 @@
       "com.carlschierig.basicstages.BasicStagesFabricClient"
     ],
     "fabric-datagen": [
+    ],
+    "jade": [
+      "com.carlschierig.basicstages.compat.jade.BSJadePlugin"
     ]
   },
   "mixins": [

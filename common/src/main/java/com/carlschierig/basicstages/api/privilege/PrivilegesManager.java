@@ -1,10 +1,10 @@
 package com.carlschierig.basicstages.api.privilege;
 
+import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.UUID;
 
 public abstract class PrivilegesManager {
     protected static PrivilegesManager INSTANCE;
@@ -19,11 +19,29 @@ public abstract class PrivilegesManager {
 
     protected abstract <K, V> PrivilegeMap<K, V> getMapImpl(PrivilegeType<K, V> type);
 
-    public static <K, V> boolean canAccess(UUID player, PrivilegeType<K, V> type, K object) {
+    /**
+     * Checks if the player can access the given object.
+     * Always true if the player is in creative mode.
+     *
+     * @param player The {@link Player} whose privileges should be checked.
+     * @param type   The type of privilege to check.
+     * @param object The object whose access should be checked.
+     * @return true if the player can access the given object or is in creative mode, false otherwise.
+     */
+    public static <K, V> boolean canAccess(Player player, PrivilegeType<K, V> type, K object) {
+        // TODO: disable in creative
         return INSTANCE.canAccessImpl(player, type, object);
     }
 
-    protected abstract <K, V> boolean canAccessImpl(UUID player, PrivilegeType<K, V> type, K object);
+    /**
+     * Checks if the player can access the given object.
+     *
+     * @param player The {@link Player} whose privileges should be checked.
+     * @param type   The type of privilege to check.
+     * @param object The object whose access should be checked.
+     * @return true if the player can access the given object, false otherwise.
+     */
+    protected abstract <K, V> boolean canAccessImpl(Player player, PrivilegeType<K, V> type, K object);
 
     public static void addPrivileges(Collection<Privilege<?, ?>> privileges) {
         INSTANCE.addPrivilegesImpl(privileges);

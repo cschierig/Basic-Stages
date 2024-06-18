@@ -6,6 +6,7 @@ import com.carlschierig.basicstages.api.stage.StageMap;
 import com.carlschierig.basicstages.impl.network.payloads.ClearPrivilegesPayload;
 import com.carlschierig.basicstages.impl.network.payloads.PlayerStagesPayload;
 import com.carlschierig.basicstages.impl.network.payloads.PrivilegePayload;
+import com.carlschierig.basicstages.impl.network.payloads.StageUpdatePayload;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.level.ServerPlayer;
@@ -15,8 +16,12 @@ import java.util.ArrayList;
 public class S2CPacketsFabric extends S2CPackets {
     @Override
     public void sendStages(ServerPlayer player) {
-        var uuid = player.getUUID();
-        ServerPlayNetworking.send(player, new PlayerStagesPayload(StageMap.getStages(uuid)));
+        ServerPlayNetworking.send(player, new PlayerStagesPayload(StageMap.getInstance().getStages(player)));
+    }
+
+    @Override
+    public void sendStageUpdate(ServerPlayer player, String stage, boolean added) {
+        ServerPlayNetworking.send(player, new StageUpdatePayload(stage, added));
     }
 
     @Override

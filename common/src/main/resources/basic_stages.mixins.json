@@ -1,13 +1,18 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "refmap": "${modId}.refmap.json",
   "package": "${modGroup}.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "common.block.BlockBehaviourMixin",
+    "common.block.PlayerMixin",
+    "common.item.ItemEntityMixin",
+    "common.item.ItemStackMixin"
   ],
   "client": [
-    "client.RenderChunkMixin"
+    "client.block.BlockModelShaperMixin",
+    "client.block.LevelRendererMixin",
+    "client.item.ItemModelShaperMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -1,6 +1,6 @@
 package com.carlschierig.basicstages.impl.privilege;
 
-import com.carlschierig.basicstages.impl.BSUtil;
+import com.carlschierig.basicstages.impl.util.BSUtil;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.resources.ResourceLocation;
 

@@ -1,7 +1,7 @@
 package com.carlschierig.basicstages.impl.registry;
 
 import com.carlschierig.basicstages.api.privilege.PrivilegeType;
-import com.carlschierig.basicstages.impl.BSUtil;
+import com.carlschierig.basicstages.impl.util.BSUtil;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 

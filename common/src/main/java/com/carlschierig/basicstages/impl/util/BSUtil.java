@@ -1,4 +1,4 @@
-package com.carlschierig.basicstages.impl;
+package com.carlschierig.basicstages.impl.util;
 
 import com.carlschierig.basicstages.api.privilege.PrivilegeTypes;
 import com.carlschierig.basicstages.api.privilege.PrivilegesManager;
