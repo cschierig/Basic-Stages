@@ -22,6 +22,13 @@ sourceSets {
             exclude("src/main/generated/.cache")
         }
     }
+    create("commonAssets") {
+    }
+}
+
+tasks.withType<ProcessResources>() {
+    from(sourceSets.getByName("commonAssets").resources)
+
 }
 
 loom {

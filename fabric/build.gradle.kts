@@ -52,6 +52,7 @@ dependencies {
     if (compatMods) {
         modImplementation(libs.compat.jade.fabric)
         modImplementation(libs.compat.sodium.fabric)
+        modImplementation(libs.compat.modmenu.fabric)
 
         modLocalRuntime("dev.emi:emi-fabric:${libs.versions.emi.get()}")
     }
@@ -142,6 +143,9 @@ tasks.withType<RemapJarTask>() {
     dependsOn(tasks.getByName<ShadowJar>("shadowJar"))
 }
 
+tasks.withType<ProcessResources>() {
+    from(commonProject.sourceSets.getByName("commonAssets").resources)
+}
 
 if (System.getenv("MODRINTH_TOKEN") != null) {
     val files = ArrayList<String>()

@@ -64,6 +64,10 @@ tasks.getByName<ShadowJar>("shadowJar") {
     archiveClassifier.set("dev-shadow")
 }
 
+tasks.withType<ProcessResources>() {
+    from(commonProject.sourceSets.getByName("commonAssets").resources)
+}
+
 if (System.getenv("MODRINTH_TOKEN") != null) {
     val files = ArrayList<String>()
     if (withSourcesJar) {

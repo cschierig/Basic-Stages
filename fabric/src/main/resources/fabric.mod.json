@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "${modId}",
   "name": "${modName}",
-  "description": "",
+  "description": "${modDescription}",
   "contact": {
     "sources": "https://github.com/cschierig/Basic-Stages",
     "issues": "https://github.com/cschierig/Basic-Stages/issues"
@@ -15,21 +15,21 @@
   "license": "${modLicense}",
   "entrypoints": {
     "main": [
-      "com.carlschierig.basicstages.BasicStagesFabric"
+      "com.carlschierig.privileged.PrivilegedFabric"
     ],
     "client": [
-      "com.carlschierig.basicstages.BasicStagesFabricClient"
+      "com.carlschierig.privileged.PrivilegedFabricClient"
     ],
     "fabric-datagen": [
     ],
     "jade": [
-      "com.carlschierig.basicstages.compat.jade.BSJadePlugin"
+      "com.carlschierig.privileged.compat.jade.PrivilegedJadePlugin"
     ]
   },
   "mixins": [
-    "basic_stages.mixins.json"
+    "${modId}.mixins.json"
   ],
-  "accessWidener": "basic_stages.accesswidener",
+  "accessWidener": "privileged.accesswidener",
   "depends": {
     "fabricloader": ">=0.14.22",
     "minecraft": "1.20.6",

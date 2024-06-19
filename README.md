@@ -1,4 +1,4 @@
-# Basic Stages
+# Privileged
 
 Provides stages which lock certain aspects of the game, such as blocks or items, behind stages.
 Pack makers can use json files to specify when an object should become accessible and how it should be hidden.
@@ -14,7 +14,7 @@ Replacement data is placed into the `data/${namespace}/stages` folder and has th
   {
     // The type determines what you are replacing. Here, we are telling the mod to treat the values
     // in "privilege" and "replacement" as blocks.
-    "type": "basic_stages:block",
+    "type": "privileged:block",
     // The stage is an arbitrary string 
     "stage": "iron",
     // The privilege is the object which is being locked away.
@@ -28,11 +28,13 @@ Replacement data is placed into the `data/${namespace}/stages` folder and has th
 Currently, the following types are available:
 | Identifier | System |
 |----|----|
-| `basic_stages:block` | Blocks |
-| `basic_stages:item` | Blocks |
+| `privileged:block` | Blocks |
+| `privileged:item` | Blocks |
 
 More in-depth documentation can be found in [the docs folder](./docs).
 There you can find information on what the individual systems achieve and what their limitations are.
+
+To gain a stage you can use the `/stage` command. The syntax is very similar to that of the `/advancement` command.
 
 ## Usage & Dependencies
 
