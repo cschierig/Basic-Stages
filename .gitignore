@@ -37,3 +37,6 @@ workspace/
 
 # macOS
 *.DS_Store
+
+# Architectury
+.architectury-transformer/

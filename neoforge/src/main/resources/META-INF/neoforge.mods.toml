@@ -12,3 +12,6 @@ displayName = "${modName}"
 authors = "${author}"
 logoFile = "assets/${modId}/icon.png"
 description = "${modDescription}"
+
+[[mixins]]
+config = "${modId}.mixins.json"

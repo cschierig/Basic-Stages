@@ -45,7 +45,7 @@ public class S2CPacketsFabric extends S2CPackets {
         var server = PrivilegedFabric.server;
         if (server != null) {
             for (var player : PlayerLookup.all(server)) {
-                sendPrivileges(player);
+                clearPrivileges(player);
             }
         }
     }

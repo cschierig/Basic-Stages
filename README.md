@@ -31,7 +31,7 @@ Currently, the following types are available:
 | `privileged:block` | Blocks |
 | `privileged:item` | Blocks |
 
-More in-depth documentation can be found in [the docs folder](./docs).
+More in-depth documentation can be found in [the docs folder on GitHub](https://github.com/cschierig/Privileged).
 There you can find information on what the individual systems achieve and what their limitations are.
 
 To gain a stage you can use the `/stage` command. The syntax is very similar to that of the `/advancement` command.
