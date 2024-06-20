@@ -1,13 +1,13 @@
 [versions]
-minecraft = "1.20.6"
+minecraft = "1.21"
 
 minotaur = "2.+"
 parchment = "2024.05.01"
 
 fabric_loader = "0.15.+"
-fabric_api = "0.99.0+1.20.6"
+fabric_api = "0.100.3+1.21"
 
-neoforge_mdk = "20.6.+"
+neoforge_mdk = "21.0.+"
 
 mixin = "0.8.5"
 
@@ -17,7 +17,7 @@ shadow = "8.1.1"
 
 junit = "5.10.+"
 
-emi = "1.1.6+1.20.6"
+emi = "1.1.7+1.21"
 
 [libraries]
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
@@ -33,9 +33,10 @@ mixin = { module = "org.spongepowered:mixin", version.ref = "mixin" }
 junit_jupiter_api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
 junit_jupiter_engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
 
-compat_jade_fabric = { module = "maven.modrinth:jade", version = "14.2.4+fabric" }
-compat_sodium_fabric = { module = "maven.modrinth:sodium", version = "mc1.20.6-0.5.9" }
-compat_modmenu_fabric = { module = "com.terraformersmc:modmenu", version = "10.0.0" }
+compat_jade_fabric = { module = "maven.modrinth:jade", version = "15.0.4+fabric" }
+compat_jade_neoforge = { module = "maven.modrinth:jade", version = "15.0.5+neoforge" }
+compat_sodium_fabric = { module = "maven.modrinth:sodium", version = "mc1.21-0.5.9" }
+compat_modmenu_fabric = { module = "com.terraformersmc:modmenu", version = "11.0.0" }
 
 [plugins]
 minotaur = { id = "com.modrinth.minotaur", version.ref = "minotaur" }

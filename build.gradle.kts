@@ -60,7 +60,8 @@ subprojects {
         "minecraft"(libs.minecraft)
         "mappings"(loom.layered {
             officialMojangMappings()
-            parchment("org.parchmentmc.data:parchment-${libs.versions.minecraft.get()}:${libs.versions.parchment.get()}@zip")
+            // TODO: enable parchment for 1.21
+            // parchment("org.parchmentmc.data:parchment-${libs.versions.minecraft.get()}:${libs.versions.parchment.get()}@zip")
         })
     }
 
@@ -103,7 +104,10 @@ subprojects {
     }
 
     tasks.withType<ProcessResources> {
-        filesMatching(listOf("pack.mcmeta", "fabric.mod.json", "*.mods.toml", "*.mixins.json")) {
+        gradle.projectsEvaluated {
+            from(project(":common").extensions.getByType(SourceSetContainer::class).getByName("commonAssets").resources)
+        }
+        filesMatching(listOf("pack.mcmeta", "fabric.mod.json", "META-INF/neoforge.mods.toml", "*.mixins.json")) {
             expand(project.properties)
         }
     }
@@ -111,6 +115,6 @@ subprojects {
 
 tasks.register("release") {
     dependsOn(project("fabric").tasks.named("modrinth").get())
-    // dependsOn(project("neoforge").tasks.named("modrinth").get())
+    dependsOn(project("neoforge").tasks.named("modrinth").get())
     dependsOn(project("fabric").tasks.named("modrinthSyncBody").get())
 }

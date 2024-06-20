@@ -20,7 +20,7 @@ public class PrivilegedState extends SavedData {
     );
     private static final String P_STATE = Util.MODID;
 
-    private static PrivilegedState INSTANCE;
+    private static PrivilegedState INSTANCE = new PrivilegedState();
 
     public static final Codec<PrivilegedState> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(

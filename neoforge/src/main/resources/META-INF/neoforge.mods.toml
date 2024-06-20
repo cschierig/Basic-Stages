@@ -1,8 +1,8 @@
 modLoader = "javafml"
 loaderVersion = "[2,)"
 
-license = "MIT"
-issueTrackerURL = ""
+license = "${modLicense}"
+issueTrackerURL = "https://github.com/cschierig/Privileged/issues"
 showAsResourcePack = false
 
 [[mods]]
@@ -11,5 +11,4 @@ version = "${modVersion}"
 displayName = "${modName}"
 authors = "${author}"
 logoFile = "assets/${modId}/icon.png"
-description = ""
-
+description = "${modDescription}"

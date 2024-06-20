@@ -1,4 +1,5 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import net.fabricmc.loom.task.RemapJarTask
 import org.gradle.kotlin.dsl.support.uppercaseFirstChar
 
 plugins {
@@ -8,6 +9,7 @@ plugins {
 
 val modId: String by project
 val withSourcesJar = property("withSourcesJar").toString().toBoolean()
+val compatMods = property("compatMods").toString().toBoolean()
 val withApiJar = property("withApiJar").toString().toBoolean()
 val modrinthId: String by project
 val modrinthType: String by project
@@ -48,24 +50,20 @@ dependencies {
 
     common(project(":common", "namedElements")) { isTransitive = false }
     shadowBundle(project(":common", "transformProductionNeoForge"))
+
+    if (compatMods) {
+        modImplementation(libs.compat.jade.neoforge)
+    }
 }
-
-sourceSets.main.get().resources.srcDir("src/generated/resources")
-
-// minecraft {
-//     val atFile = file("src/main/resources/META-INF/accesstransformer.cfg")
-//     if (atFile.exists()) {
-//         file(atFile)
-//     }
-// }
 
 tasks.getByName<ShadowJar>("shadowJar") {
     configurations = listOf(shadowBundle)
     archiveClassifier.set("dev-shadow")
 }
 
-tasks.withType<ProcessResources>() {
-    from(commonProject.sourceSets.getByName("commonAssets").resources)
+tasks.withType<RemapJarTask>() {
+    inputFile.set(tasks.getByName<ShadowJar>("shadowJar").archiveFile)
+    dependsOn(tasks.getByName<ShadowJar>("shadowJar"))
 }
 
 if (System.getenv("MODRINTH_TOKEN") != null) {
@@ -83,7 +81,7 @@ if (System.getenv("MODRINTH_TOKEN") != null) {
         versionNumber.set(project.version.toString())
         versionName.set(project.version.toString() + " - " + project.name.uppercaseFirstChar())
         versionType.set(modrinthType)
-        uploadFile.set(tasks.named<Jar>("jar"))
+        uploadFile.set(tasks.named("remapJar"))
         additionalFiles.set(files.map { tasks.named(it) })
         syncBodyFrom.set(rootProject.file("README.md").readText())
         dependencies {

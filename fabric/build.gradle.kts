@@ -8,6 +8,7 @@ plugins {
 }
 
 val modId: String by project
+val modGroup: String by project
 val withApiJar = property("withApiJar").toString().toBoolean()
 val withSourcesJar = property("withSourcesJar").toString().toBoolean()
 val compatMods = property("compatMods").toString().toBoolean()
@@ -54,13 +55,16 @@ dependencies {
         modImplementation(libs.compat.sodium.fabric)
         modImplementation(libs.compat.modmenu.fabric)
 
-        modLocalRuntime("dev.emi:emi-fabric:${libs.versions.emi.get()}")
+        // TODO: emi compat
+        // modLocalRuntime("dev.emi:emi-fabric:${libs.versions.emi.get()}")
     }
 }
+
 
 sourceSets {
     if (withExampleMod) {
         create("example") {
+            // TODO: only add api to compileClasspath
             compileClasspath += sourceSets.main.get().compileClasspath
             runtimeClasspath += sourceSets.main.get().runtimeClasspath
 
@@ -70,16 +74,10 @@ sourceSets {
             }
         }
     }
-    getByName("main") {
-        resources {
-            srcDir(file("src/main/generated"))
-            exclude("src/main/generated/resources/.cache")
-        }
-    }
 }
 
 loom {
-    val awPath = commonProject.file("src/main/resources/${modId}.accesswidener")
+    val awPath = commonProject.file("src/commonAssets/resources/${modId}.accesswidener")
     if (awPath.exists()) {
         accessWidenerPath.set(awPath)
     }
@@ -100,8 +98,8 @@ loom {
             inherit(getByName("client"))
             name("Data Generation")
             vmArg("-Dfabric-api.datagen")
-            vmArg("-Dfabric-api.datagen.output-dir=${commonProject.file("src/main/generated")}")
-            vmArg("-Dfabric-api.datagen.modid=immersive_crafting")
+            vmArg("-Dfabric-api.datagen.output-dir=${commonProject.file("src/commonAssets/generated")}")
+            vmArg("-Dfabric-api.datagen.modid=$modId")
 
             runDir("build/datagen")
         }
@@ -125,7 +123,7 @@ loom {
                 name("Example Mod Data Generation")
                 vmArg("-Dfabric-api.datagen")
                 vmArg("-Dfabric-api.datagen.output-dir=${file("src/example/generated")}")
-                vmArg("-Dfabric-api.datagen.modid=ic_examples")
+                vmArg("-Dfabric-api.datagen.modid=${modId}_example")
 
                 runDir("build/exampleDatagen")
             }
@@ -143,8 +141,19 @@ tasks.withType<RemapJarTask>() {
     dependsOn(tasks.getByName<ShadowJar>("shadowJar"))
 }
 
-tasks.withType<ProcessResources>() {
-    from(commonProject.sourceSets.getByName("commonAssets").resources)
+if (withApiJar) {
+    tasks.register<Jar>("apiJar") {
+        archiveClassifier.set("api")
+        dependsOn(tasks.named("remapJar"))
+        from(zipTree(tasks.named("remapJar").get().outputs.files.asPath))
+        include("fabric.mod.json")
+        include("*.mixins.json")
+        include("${modGroup.replace('.', '/')}/api/**")
+    }
+
+    tasks.named("build") {
+        dependsOn(tasks.named("apiJar"))
+    }
 }
 
 if (System.getenv("MODRINTH_TOKEN") != null) {
@@ -174,5 +183,5 @@ if (System.getenv("MODRINTH_TOKEN") != null) {
         detectLoaders.set(false)
         changelog.set(file("../CHANGELOG.md").readText())
     }
-    //tasks.named("modrinth") { dependsOn("runDatagen") }
+    tasks.named("modrinth") { dependsOn("runDatagen") }
 }

@@ -15,11 +15,11 @@ public class Util {
     public static final Logger LOG = LoggerFactory.getLogger(MODID);
 
     public static <T extends CustomPacketPayload> CustomPacketPayload.Type<T> getType(String value) {
-        return CustomPacketPayload.createType(MODID + ":" + value);
+        return new CustomPacketPayload.Type<>(id(value));
     }
 
     public static ResourceLocation id(String name) {
-        return new ResourceLocation(MODID, name);
+        return ResourceLocation.tryBuild(MODID, name);
     }
 
     public static BlockState replace(BlockState state, Player uuid) {
