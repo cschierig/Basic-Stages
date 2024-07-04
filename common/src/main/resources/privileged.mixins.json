@@ -7,7 +7,9 @@
     "common.block.BlockBehaviourMixin",
     "common.block.PlayerMixin",
     "common.item.ItemEntityMixin",
-    "common.item.ItemStackMixin"
+    "common.item.ItemStackMixin",
+    "common.item.RecipeCraftingHolderMixin",
+    "common.item.SlotMixin"
   ],
   "client": [
     "client.block.BlockModelShaperMixin",

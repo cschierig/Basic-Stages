@@ -87,6 +87,8 @@ Prevents players from picking it up, logging a message.
 
 - Prevent player from picking up the item
 - drop item if it is in inventory
+- remove recipes which contain locked items as ingredients or results
+- prevent clicking/shift-clicking on item in inventory
 
 When the item is dropped or a player tries to pick it up, a message is displayed telling them why.
 Currently, the wording for this is relatively abstract.

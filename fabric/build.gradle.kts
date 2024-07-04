@@ -56,7 +56,7 @@ dependencies {
         modImplementation(libs.compat.modmenu.fabric)
 
         // TODO: emi compat
-        // modLocalRuntime("dev.emi:emi-fabric:${libs.versions.emi.get()}")
+        modLocalRuntime("dev.emi:emi-fabric:${libs.versions.emi.get()}")
     }
 }
 

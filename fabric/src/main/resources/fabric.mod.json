@@ -20,10 +20,11 @@
     "client": [
       "com.carlschierig.privileged.PrivilegedFabricClient"
     ],
-    "fabric-datagen": [
-    ],
     "jade": [
       "com.carlschierig.privileged.compat.jade.PrivilegedJadePlugin"
+    ],
+    "emi": [
+      "com.carlschierig.privileged.compat.emi.PrivilegedEmiPlugin"
     ]
   },
   "mixins": [

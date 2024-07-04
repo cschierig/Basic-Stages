@@ -60,8 +60,7 @@ subprojects {
         "minecraft"(libs.minecraft)
         "mappings"(loom.layered {
             officialMojangMappings()
-            // TODO: enable parchment for 1.21
-            // parchment("org.parchmentmc.data:parchment-${libs.versions.minecraft.get()}:${libs.versions.parchment.get()}@zip")
+            parchment("org.parchmentmc.data:parchment-${libs.versions.minecraft.get()}:${libs.versions.parchment.get()}@zip")
         })
     }
 

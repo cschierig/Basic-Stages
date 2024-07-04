@@ -4,5 +4,11 @@
     "stage": "iron_item",
     "privilege": "minecraft:grass_block",
     "replacement": "minecraft:iron_block"
+  },
+  {
+    "type": "privileged:item",
+    "stage": "iron_item",
+    "privilege": "minecraft:gold_block",
+    "replacement": "minecraft:cobblestone"
   }
 ]

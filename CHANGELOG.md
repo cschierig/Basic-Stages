@@ -1,5 +1,5 @@
-## 0.1.1
+## 0.2.0
 
-- Port to 1.21
-- Fix client crash when connecting to dedicated server.
-- Fix privileges not being cleared on reload. 
+- Prevent crafting recipes from working when player can't access result
+- Prevent clicking on items in inventory
+- Emi Compat
