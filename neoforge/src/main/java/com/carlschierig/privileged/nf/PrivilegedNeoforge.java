@@ -33,7 +33,8 @@ public class PrivilegedNeoforge {
 
     @SubscribeEvent
     public void addReloadListener(AddReloadListenerEvent event) {
-        event.addListener(new PrivilegesManagerImpl());
+        // TODO: load order
+        event.addListener(new PrivilegesManagerImpl(event::getRegistryAccess));
     }
 
     @SubscribeEvent
@@ -47,7 +48,7 @@ public class PrivilegedNeoforge {
         if (event.getEntity() instanceof ServerPlayer player) {
             S2CPackets.INSTANCE.sendStages(player);
             S2CPackets.INSTANCE.clearPrivileges(player);
-            S2CPackets.INSTANCE.sendPrivileges(player);
+            S2CPackets.INSTANCE.sendProviders(player);
         }
     }
 

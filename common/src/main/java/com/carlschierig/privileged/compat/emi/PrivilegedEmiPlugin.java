@@ -23,6 +23,11 @@ public class PrivilegedEmiPlugin implements EmiPlugin {
                     recipe.getOutputs().stream()
                             .anyMatch(output -> !PrivilegesManager.canAccess(player, PrivilegeTypes.ITEM, output.getItemStack().getItem()))
             );
+            registry.removeRecipes(recipe ->
+                    recipe.getInputs().stream().anyMatch(
+                            input -> input.getEmiStacks().stream()
+                                    .noneMatch(stack -> PrivilegesManager.canAccess(player, PrivilegeTypes.ITEM, stack.getItemStack().getItem())))
+            );
         }
     }
 }

@@ -1,0 +1,45 @@
+[
+  {
+    "type": "privileged:block",
+    "stage": "stuff",
+    "privileges": "#minecraft:logs",
+    "replacement": {
+      "Name": "minecraft:iron_block"
+    },
+    "replaceItems": false
+  },
+  {
+    "type": "privileged:block",
+    "stage": "iron",
+    "privileges": "#minecraft:iron_ores",
+    "replacement": {
+      "path": {
+        "matching": "iron",
+        "with": "coal"
+      }
+    }
+  },
+  {
+    "type": "privileged:block",
+    "stage": "stuff",
+    "privileges": "minecraft:redstone_lamp",
+    "replacement": {
+      "Name": "minecraft:copper_bulb"
+    },
+    "replaceItems": false
+  },
+  {
+    "type": "privileged:block_state",
+    "stage": "stuff",
+    "privilege": {
+      "Name": "minecraft:iron_door",
+      "Properties": {
+        "half": "upper"
+      }
+    },
+    "replacement": {
+      "Name": "minecraft:oak_door"
+    },
+    "replaceItem": false
+  }
+]

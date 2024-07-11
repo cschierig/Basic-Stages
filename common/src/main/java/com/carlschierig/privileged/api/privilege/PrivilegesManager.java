@@ -1,23 +1,20 @@
 package com.carlschierig.privileged.api.privilege;
 
+import com.carlschierig.privileged.api.privilege.provider.PrivilegeProvider;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 
-public abstract class PrivilegesManager {
-    protected static PrivilegesManager INSTANCE;
+public final class PrivilegesManager {
+    private static Map<PrivilegeType<?, ?, ?>, PrivilegeMap<?, ?, ?>> privileges = new HashMap<>();
+    private static final List<PrivilegeProvider> newProviders = new ArrayList<>();
+    private static final List<PrivilegeProvider> allProviders = new ArrayList<>();
 
-    protected PrivilegesManager() {
-        INSTANCE = this;
+    @SuppressWarnings("unchecked")
+    private static <K, P, V> PrivilegeMap<K, P, V> getMap(PrivilegeType<K, P, V> type) {
+        return (PrivilegeMap<K, P, V>) privileges.get(type);
     }
-
-    public static <K, V> PrivilegeMap<K, V> getMap(PrivilegeType<K, V> type) {
-        return INSTANCE.getMapImpl(type);
-    }
-
-    protected abstract <K, V> PrivilegeMap<K, V> getMapImpl(PrivilegeType<K, V> type);
 
     /**
      * Checks if the player can access the given object.
@@ -28,26 +25,25 @@ public abstract class PrivilegesManager {
      * @param object The object whose access should be checked.
      * @return true if the player can access the given object or is in creative mode, false otherwise.
      */
-    public static <K, V> boolean canAccess(Player player, PrivilegeType<K, V> type, K object) {
+    @SuppressWarnings("unchecked")
+    public static <K, P, V> boolean canAccess(Player player, PrivilegeType<K, P, V> type, P object) {
+        evaluateProviders();
         // TODO: disable in creative
-        return INSTANCE.canAccessImpl(player, type, object);
+        var map = (PrivilegeMap<K, P, V>) privileges.get(type);
+        return map == null || map.canAccess(player, type.keySupplier().apply(object), object);
     }
 
-    /**
-     * Checks if the player can access the given object.
-     *
-     * @param player The {@link Player} whose privileges should be checked.
-     * @param type   The type of privilege to check.
-     * @param object The object whose access should be checked.
-     * @return true if the player can access the given object, false otherwise.
-     */
-    protected abstract <K, V> boolean canAccessImpl(Player player, PrivilegeType<K, V> type, K object);
-
-    public static void addPrivileges(Collection<Privilege<?, ?>> privileges) {
-        INSTANCE.addPrivilegesImpl(privileges);
+    private static void addPrivileges(Collection<Privilege<?, ?, ?>> privileges) {
+        for (var privilege : privileges) {
+            addPrivilege(privilege);
+        }
     }
 
-    protected abstract void addPrivilegesImpl(Collection<Privilege<?, ?>> privileges);
+    private static <K, P, V> void addPrivilege(Privilege<K, P, V> privilege) {
+        var type = privilege.type();
+        privileges.putIfAbsent(privilege.type(), new PrivilegeMap<>());
+        getMap(type).addPrivilege(privilege);
+    }
 
     /**
      * Returns the privilege for the given type and object or null if there isn't any.
@@ -56,31 +52,40 @@ public abstract class PrivilegesManager {
      * @param object The resource location of the privilege.
      * @return the privilege for the given type and object or null if there isn't any.
      */
-    public static <K, V> @Nullable Privilege<K, V> getPrivilege(PrivilegeType<K, V> type, K object) {
-        return INSTANCE.getPrivilegeImpl(type, object);
+    @SuppressWarnings("unchecked")
+    public static <K, P, V> @Nullable Privilege<K, P, V> getPrivilege(PrivilegeType<K, P, V> type, K object) {
+        evaluateProviders();
+        return ((PrivilegeMap<K, P, V>) privileges.get(type)).getPrivilege(object);
     }
 
-    protected abstract <K, V> Privilege<K, V> getPrivilegeImpl(PrivilegeType<K, V> type, K object);
-
-    public static Map<PrivilegeType<?, ?>, PrivilegeMap<?, ?>> getPrivileges() {
-        return INSTANCE.getPrivilegesImpl();
+    public static void addProvider(PrivilegeProvider provider) {
+        newProviders.add(provider);
+        allProviders.add(provider);
     }
 
-    protected abstract Map<PrivilegeType<?, ?>, PrivilegeMap<?, ?>> getPrivilegesImpl();
-
-    public static <K, V> Collection<Privilege<K, V>> getPrivileges(PrivilegeType<K, V> type) {
-        return getMap(type).getPrivileges();
+    public static void addProviders(Collection<PrivilegeProvider> providers) {
+        newProviders.addAll(providers);
+        allProviders.addAll(providers);
     }
 
-    public static Collection<PrivilegeType<?, ?>> getTypes() {
-        return INSTANCE.getTypesImpl();
+    public static List<PrivilegeProvider> getProviders() {
+        return allProviders;
     }
 
-    protected abstract Collection<PrivilegeType<?, ?>> getTypesImpl();
+    private static void evaluateProviders() {
+        if (newProviders.isEmpty()) {
+            return;
+        }
+        for (int i = newProviders.size() - 1; i >= 0; i--) {
+            var provider = newProviders.get(i);
+            addPrivileges(provider.getPrivileges());
+            newProviders.remove(i);
+        }
+    }
 
     public static void clear() {
-        INSTANCE.clearImpl();
+        privileges.clear();
+        newProviders.clear();
+        allProviders.clear();
     }
-
-    protected abstract void clearImpl();
 }

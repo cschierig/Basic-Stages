@@ -4,7 +4,7 @@ import com.carlschierig.privileged.api.privilege.PrivilegesManager;
 import com.carlschierig.privileged.api.stage.StageMap;
 import com.carlschierig.privileged.impl.network.payloads.ClearPrivilegesPayload;
 import com.carlschierig.privileged.impl.network.payloads.PlayerStagesPayload;
-import com.carlschierig.privileged.impl.network.payloads.PrivilegePayload;
+import com.carlschierig.privileged.impl.network.payloads.ProviderPayload;
 import com.carlschierig.privileged.impl.network.payloads.StageUpdatePayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -27,9 +27,9 @@ public class ClientPacketReceiver {
         );
     }
 
-    public static void receivePrivileges(PrivilegePayload payload, IPayloadContext ctx) {
+    public static void receiveProviders(ProviderPayload payload, IPayloadContext ctx) {
         ctx.enqueueWork(
-                () -> PrivilegesManager.addPrivileges(payload.privileges())
+                () -> PrivilegesManager.addProviders(payload.providers())
         );
     }
 

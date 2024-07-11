@@ -5,31 +5,14 @@ Pack makers can use json files to specify when an object should become accessibl
 
 ## Documentation
 
-Replacement data is placed into the `data/${namespace}/stages` folder and has the following structure:
-
-```json5
-// Each file is a json array
-[
-  // you can put as many replacements as you want into a single file, or split them up into subdirectories
-  {
-    // The type determines what you are replacing. Here, we are telling the mod to treat the values
-    // in "privilege" and "replacement" as blocks.
-    "type": "privileged:block",
-    // The stage is an arbitrary string 
-    "stage": "iron",
-    // The privilege is the object which is being locked away.
-    "privilege": "minecraft:grass_block",
-    // The replacement is the object which is used instead of the privilege.
-    "replacement": "minecraft:iron_block"
-  }
-]
-```
+Replacement data is placed into the `data/${namespace}/privilege` folder and has the following structure:
 
 Currently, the following types are available:
 | Identifier | System |
 |----|----|
 | `privileged:block` | Blocks |
-| `privileged:item` | Blocks |
+| `privileged:item` | Items |
+| `privileged:block_state` | Block States |
 
 More in-depth documentation can be found in [the docs folder on GitHub](https://github.com/cschierig/Privileged).
 There you can find information on what the individual systems achieve and what their limitations are.

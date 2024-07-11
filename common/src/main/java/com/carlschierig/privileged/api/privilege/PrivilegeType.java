@@ -1,13 +1,11 @@
 package com.carlschierig.privileged.api.privilege;
 
-import com.carlschierig.privileged.api.registry.PrivilegedRegistries;
-import com.carlschierig.privileged.impl.registry.PrivilegedRegistryKeys;
-import com.mojang.serialization.Codec;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import java.util.function.Function;
 
-public record PrivilegeType<K, V>(Privilege.Serializer<K, V> serializer) {
-    public static final Codec<PrivilegeType<?, ?>> CODEC = PrivilegedRegistries.PRIVILEGE_TYPE.byNameCodec();
-    public static final StreamCodec<RegistryFriendlyByteBuf, PrivilegeType<?, ?>> STREAM_CODEC = ByteBufCodecs.registry(PrivilegedRegistryKeys.PRIVILEGE_TYPE);
+/**
+ * @param <K> The type of the key used for the privilege
+ * @param <P> The type of the privilege which is passed for evaluation
+ * @param <V> The type of the returned value
+ */
+public record PrivilegeType<K, P, V>(Function<P, K> keySupplier) {
 }

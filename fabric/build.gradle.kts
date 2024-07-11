@@ -177,6 +177,7 @@ if (System.getenv("MODRINTH_TOKEN") != null) {
         dependencies {
             required.project("fabric-api")
             optional.project("jade")
+            optional.project("emi")
         }
         gameVersions.set(listOf(libs.versions.minecraft.get()))
         loaders.set(listOf("fabric", "quilt"))

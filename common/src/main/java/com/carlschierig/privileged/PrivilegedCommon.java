@@ -2,15 +2,20 @@ package com.carlschierig.privileged;
 
 import com.carlschierig.privileged.api.advancement.criterion.PrivilegedCriteriaTriggers;
 import com.carlschierig.privileged.api.privilege.PrivilegeTypes;
+import com.carlschierig.privileged.api.privilege.provider.ProviderTypes;
 import com.carlschierig.privileged.api.stage.event.PrivilegedEvents;
 import com.carlschierig.privileged.impl.network.S2CPackets;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.protocol.common.ClientboundUpdateTagsPacket;
 import net.minecraft.network.protocol.game.ClientboundUpdateRecipesPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagNetworkSerialization;
 
 public class PrivilegedCommon {
+    public static HolderLookup.Provider registryLookup;
+
     public static void init() {
+        ProviderTypes.init();
         PrivilegeTypes.init();
         PrivilegedCriteriaTriggers.init();
 

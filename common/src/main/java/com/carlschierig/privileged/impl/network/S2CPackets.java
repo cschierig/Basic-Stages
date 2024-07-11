@@ -20,11 +20,11 @@ public abstract class S2CPackets {
      */
     public abstract void sendStageUpdate(ServerPlayer player, String stage, boolean added);
 
-    public abstract void sendPrivileges();
+    public abstract void sendProviders();
 
     public abstract void clearPrivileges();
 
-    public abstract void sendPrivileges(ServerPlayer player);
+    public abstract void sendProviders(ServerPlayer player);
 
     public abstract void clearPrivileges(ServerPlayer player);
 }

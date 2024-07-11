@@ -7,7 +7,7 @@ parchment = "2024.06.23"
 fabric_loader = "0.15.+"
 fabric_api = "0.100.4+1.21"
 
-neoforge_mdk = "21.0.+"
+neoforge_mdk = "21.0.65-beta"
 
 architectury_loom = "1.7-SNAPSHOT"
 architectury_plugin = "3.4-SNAPSHOT"

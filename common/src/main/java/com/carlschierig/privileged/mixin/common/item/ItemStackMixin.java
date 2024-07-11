@@ -23,7 +23,7 @@ import java.util.List;
 public abstract class ItemStackMixin {
 
     @Shadow
-    public abstract List<Component> getTooltipLines(Item.TooltipContext tooltipContext, Player player, TooltipFlag tooltipFlag);
+    public abstract Component getHoverName();
 
     @Inject(method = "inventoryTick", at = @At("HEAD"), cancellable = true)
     private void onTick(Level level, Entity entity, int inventorySlot, boolean isCurrentItem, CallbackInfo ci) {
@@ -33,8 +33,7 @@ public abstract class ItemStackMixin {
         var stack = (ItemStack) (Object) (this);
         if (entity instanceof ServerPlayer player) {
             if (!stack.isEmpty() && !PrivilegesManager.canAccess(player, PrivilegeTypes.ITEM, stack.getItem())) {
-                var replacement = PrivilegesManager.getPrivilege(PrivilegeTypes.ITEM, stack.getItem());
-                player.sendSystemMessage(Component.literal("This ").append(replacement.replacement().getDefaultInstance().getDisplayName()).append(" feels strange, probably best to throw it away."));
+                player.sendSystemMessage(Component.literal("This item feels strange, probably best to throw it away."));
                 player.drop(stack.copy(), false, false);
                 player.getInventory().removeItem(inventorySlot, stack.getCount());
                 ci.cancel();
@@ -46,8 +45,7 @@ public abstract class ItemStackMixin {
     private void replaceTooltip(Item.TooltipContext tooltipContext, Player player, TooltipFlag tooltipFlag, CallbackInfoReturnable<List<Component>> cir) {
         var stack = (ItemStack) (Object) (this);
         if (!PrivilegesManager.canAccess(player, PrivilegeTypes.ITEM, stack.getItem())) {
-            var replacement = PrivilegesManager.getPrivilege(PrivilegeTypes.ITEM, stack.getItem());
-            cir.setReturnValue(replacement.replacement().getDefaultInstance().getTooltipLines(tooltipContext, player, tooltipFlag));
+            cir.setReturnValue(List.of(getHoverName()));
             cir.cancel();
         }
     }

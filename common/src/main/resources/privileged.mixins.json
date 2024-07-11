@@ -4,6 +4,7 @@
   "package": "${modGroup}.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "common.ServerAdvancementManagerMixin",
     "common.block.BlockBehaviourMixin",
     "common.block.PlayerMixin",
     "common.item.ItemEntityMixin",
@@ -14,6 +15,7 @@
   "client": [
     "client.block.BlockModelShaperMixin",
     "client.block.LevelRendererMixin",
+    "client.item.ItemMixin",
     "client.item.ItemModelShaperMixin"
   ],
   "injectors": {

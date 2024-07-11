@@ -28,9 +28,8 @@ public abstract class ItemEntityMixin {
     private void cancelPickup(Player player, CallbackInfo ci) {
         var item = getItem().getItem();
         if (player instanceof ServerPlayer && !PrivilegesManager.canAccess(player, PrivilegeTypes.ITEM, item) && !hasPickUpDelay()) {
-            var replacement = PrivilegesManager.getPrivilege(PrivilegeTypes.ITEM, item);
             setPickUpDelay(5 * 20);
-            player.sendSystemMessage(Component.literal("This ").append(replacement.replacement().getDefaultInstance().getDisplayName()).append(" feels strange, I should leave it there."));
+            player.sendSystemMessage(Component.literal("This item feels strange, I should leave it there."));
             ci.cancel();
         }
     }

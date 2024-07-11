@@ -1,0 +1,11 @@
+[
+  {
+    "type": "privileged:item",
+    "stage": "birch",
+    "privileges": "#minecraft:birch_logs",
+    "replacement": {
+      "matching": "birch",
+      "with": "oak"
+    }
+  }
+]

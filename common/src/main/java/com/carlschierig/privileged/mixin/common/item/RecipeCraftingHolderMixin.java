@@ -21,5 +21,13 @@ public interface RecipeCraftingHolderMixin {
             cir.setReturnValue(false);
             cir.cancel();
         }
+        if (recipeValue.getIngredients().stream()
+                .filter(ingredient -> ingredient.getItems().length == 1)
+                .map(ingredient -> ingredient.getItems()[0])
+                .anyMatch(stack -> !PrivilegesManager.canAccess(players, PrivilegeTypes.ITEM, stack.getItem()))
+        ) {
+            cir.setReturnValue(false);
+            cir.cancel();
+        }
     }
 }

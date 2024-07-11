@@ -26,7 +26,7 @@ public class PrivilegedFabric implements ModInitializer {
 
         PrivilegedCommon.init();
 
-        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new PrivilegesManagerImplFabric());
+        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new PrivilegesManagerImplFabric(() -> PrivilegedCommon.registryLookup));
 
         PrivilegedMessages.registerPayloadsS2C();
 
@@ -37,7 +37,7 @@ public class PrivilegedFabric implements ModInitializer {
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             S2CPackets.INSTANCE.sendStages(handler.player);
             S2CPackets.INSTANCE.clearPrivileges(handler.player);
-            S2CPackets.INSTANCE.sendPrivileges(handler.player);
+            S2CPackets.INSTANCE.sendProviders(handler.player);
         });
 
         ServerLifecycleEvents.SERVER_STARTING.register(server -> PrivilegedFabric.server = server);

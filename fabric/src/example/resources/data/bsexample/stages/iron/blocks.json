@@ -1,8 +1,0 @@
-[
-  {
-    "type": "privileged:block",
-    "stage": "iron",
-    "privilege": "minecraft:grass_block",
-    "replacement": "minecraft:iron_block"
-  }
-]
