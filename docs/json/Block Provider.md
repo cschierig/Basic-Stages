@@ -14,9 +14,9 @@ The following example replaces all logs with a redstone lamp if the player doesn
   "stage": "stage_name",
   // Must be a resource location (e.g. "minecraft:oak_log")
   // or a tag (e.g. "#minecraft:logs")
-  "privileges": "#minecraft:logs",
+  "privilege": "#minecraft:logs",
   // What the locked blocks should be replaced with.
-  // Must be a block state override or a resource location patch.
+  // Must be a block state override, a resource location patch or a resource location.
   // See the document on replacements for more details.
   // The example uses a block state override
   "replacement": {

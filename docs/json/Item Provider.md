@@ -12,9 +12,9 @@ Block providers replace a single block or a block tag with a different block sta
   "stage": "stage_name",
   // Must be a resource location (e.g. "minecraft:oak_log")
   // or a tag (e.g. "#minecraft:logs")
-  "privileges": "#minecraft:logs",
+  "privilege": "#minecraft:logs",
   // What the locked items should be replaced with.
-  // Must be an item stack or a resource location patch.
+  // Must be an item stack, resource location patch or a resource location. 
   // See the document on replacements for more details.
   // The example uses an item stack 
   "replacement": {

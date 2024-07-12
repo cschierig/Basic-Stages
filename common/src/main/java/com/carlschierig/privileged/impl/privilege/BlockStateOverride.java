@@ -32,6 +32,7 @@ public record BlockStateOverride(BlockState base, Set<String> overriddenProperti
             }
     );
 
+
     public static StreamCodec<RegistryFriendlyByteBuf, BlockStateOverride> STREAM_CODEC = StreamCodec.composite(
             Util.BLOCK_STATE_STREAM_CODEC,
             BlockStateOverride::base,
@@ -39,6 +40,12 @@ public record BlockStateOverride(BlockState base, Set<String> overriddenProperti
             BlockStateOverride::overriddenProperties,
             BlockStateOverride::new
     );
+
+    public static BlockStateOverride of(BlockState state) {
+        return new BlockStateOverride(state, Set.of());
+    }
+
+    ;
 
     public boolean matches(BlockState other) {
         if (!other.is(base.getBlock())) {

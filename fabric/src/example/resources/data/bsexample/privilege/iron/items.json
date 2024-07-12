@@ -2,10 +2,40 @@
   {
     "type": "privileged:item",
     "stage": "birch",
-    "privileges": "#minecraft:birch_logs",
+    "privilege": "#minecraft:birch_logs",
     "replacement": {
-      "matching": "birch",
-      "with": "oak"
+      "path": {
+        "matching": "birch",
+        "with": "oak"
+      }
     }
+  },
+  {
+    "type": "privileged:item",
+    "stage": "tools",
+    "privilege": [
+      "minecraft:iron_sword",
+      "minecraft:iron_pickaxe"
+    ],
+    "replacement": {
+      "path": {
+        "matching": "iron",
+        "with": "stone"
+      }
+    }
+  },
+  {
+    "type": "privileged:item",
+    "privilege": "minecraft:iron_helmet",
+    "replacement": {
+      "id": "minecraft:leather_helmet"
+    },
+    "stage": "armor"
+  },
+  {
+    "type": "privileged:item",
+    "privilege": "minecraft:iron_chestplate",
+    "replacement": "minecraft:leather_chestplate",
+    "stage": "armor"
   }
 ]

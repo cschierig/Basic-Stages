@@ -2,7 +2,7 @@
   {
     "type": "privileged:block",
     "stage": "stuff",
-    "privileges": "#minecraft:logs",
+    "privilege": "#minecraft:logs",
     "replacement": {
       "Name": "minecraft:iron_block"
     },
@@ -11,7 +11,7 @@
   {
     "type": "privileged:block",
     "stage": "iron",
-    "privileges": "#minecraft:iron_ores",
+    "privilege": "#minecraft:iron_ores",
     "replacement": {
       "path": {
         "matching": "iron",
@@ -22,11 +22,17 @@
   {
     "type": "privileged:block",
     "stage": "stuff",
-    "privileges": "minecraft:redstone_lamp",
+    "privilege": "minecraft:redstone_lamp",
     "replacement": {
       "Name": "minecraft:copper_bulb"
     },
     "replaceItems": false
+  },
+  {
+    "type": "privileged:block",
+    "stage": "stuff",
+    "privilege": "minecraft:campfire",
+    "replacement": "minecraft:soul_campfire"
   },
   {
     "type": "privileged:block_state",
@@ -40,6 +46,18 @@
     "replacement": {
       "Name": "minecraft:oak_door"
     },
+    "replaceItem": false
+  },
+  {
+    "type": "privileged:block_state",
+    "stage": "stuff",
+    "privilege": {
+      "Name": "minecraft:birch_door",
+      "Properties": {
+        "half": "lower"
+      }
+    },
+    "replacement": "minecraft:oak_door",
     "replaceItem": false
   }
 ]

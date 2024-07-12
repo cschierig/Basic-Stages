@@ -15,6 +15,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -57,13 +58,15 @@ public class ItemProvider extends PrivilegeProvider {
                 var item = privilege.unwrap().map(BuiltInRegistries.ITEM::get, Function.identity());
                 var oldId = BuiltInRegistries.ITEM.getKey(item);
                 var newId = patch.replace(oldId);
-                var newItem = BuiltInRegistries.ITEM.getOptional(newId);
-                if (newItem.isPresent()) {
-                    list.add(
-                            new Privilege<>(PrivilegeTypes.ITEM, getStage(), item, p -> true, newItem.get().getDefaultInstance())
-                    );
-                } else {
-                    Util.LOG.warn("Could not patch resource location '{}'. The new resource location '{}' isn't an item", oldId, newId);
+                if (!newId.equals(oldId)) {
+                    var newItem = BuiltInRegistries.ITEM.getOptional(newId);
+                    if (newItem.isPresent()) {
+                        list.add(
+                                new Privilege<>(PrivilegeTypes.ITEM, getStage(), item, p -> true, newItem.get().getDefaultInstance())
+                        );
+                    } else {
+                        Util.LOG.warn("Could not patch resource location '{}'. The new resource location '{}' isn't an item", oldId, newId);
+                    }
                 }
             }
         }
@@ -73,9 +76,15 @@ public class ItemProvider extends PrivilegeProvider {
 
     public static final MapCodec<ItemProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
                     Codec.STRING.fieldOf("stage").forGetter(ItemProvider::getStage),
-                    RegistryCodecs.homogeneousList(Registries.ITEM).fieldOf("privileges").forGetter(p -> p.privileges),
+                    RegistryCodecs.homogeneousList(Registries.ITEM).fieldOf("privilege").forGetter(p -> p.privileges),
                     Codec.either(
-                            ItemStack.CODEC,
+                            Codec.withAlternative(
+                                    ItemStack.CODEC,
+                                    ResourceLocation.CODEC.xmap(
+                                            id -> BuiltInRegistries.ITEM.get(id).getDefaultInstance(),
+                                            item -> BuiltInRegistries.ITEM.getKey(item.getItem())
+                                    )
+                            ),
                             ResourceLocationPatch.CODEC
                     ).fieldOf("replacement").forGetter(p -> p.replacement)
             ).apply(instance, ItemProvider::new)

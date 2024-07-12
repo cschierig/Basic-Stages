@@ -78,7 +78,7 @@ public class Util {
         if (uuid != null && !PrivilegesManager.canAccess(uuid, PrivilegeTypes.ITEM, stack.getItem())) {
             var privilege = PrivilegesManager.getPrivilege(PrivilegeTypes.ITEM, stack.getItem());
 
-            return privilege.replacement();
+            return privilege.replacement().copy();
         }
         return stack;
     }

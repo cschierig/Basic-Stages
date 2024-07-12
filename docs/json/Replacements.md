@@ -9,6 +9,16 @@ respective documents.
 An item stack.
 More details on item components can be found on the [Minecraft Wiki](https://minecraft.wiki/w/Data_component_format).
 
+## Resource Location
+
+The resource location of the replacement object.
+
+Example:
+
+```json5
+"minecraft:oak_log"
+```
+
 ### Example
 
 ```json5

@@ -17,6 +17,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -65,13 +66,15 @@ public class BlockProvider extends PrivilegeProvider {
                 var block = privilege.unwrap().map(BuiltInRegistries.BLOCK::get, Function.identity());
                 var oldId = BuiltInRegistries.BLOCK.getKey(block);
                 var newId = patch.replace(oldId);
-                var newBlock = BuiltInRegistries.BLOCK.getOptional(newId);
-                if (newBlock.isPresent()) {
-                    list.add(
-                            new Privilege<>(PrivilegeTypes.BLOCK, getStage(), block, p -> true, new BlockStateOverride(newBlock.get().defaultBlockState(), Set.of()))
-                    );
-                } else {
-                    Util.LOG.warn("Could not patch resource location '{}'. The new resource location '{}' isn't an item", oldId, newId);
+                if (!newId.equals(oldId)) {
+                    var newBlock = BuiltInRegistries.BLOCK.getOptional(newId);
+                    if (newBlock.isPresent()) {
+                        list.add(
+                                new Privilege<>(PrivilegeTypes.BLOCK, getStage(), block, p -> true, new BlockStateOverride(newBlock.get().defaultBlockState(), Set.of()))
+                        );
+                    } else {
+                        Util.LOG.warn("Could not patch resource location '{}'. The new resource location '{}' isn't an item", oldId, newId);
+                    }
                 }
             }
         }
@@ -89,8 +92,17 @@ public class BlockProvider extends PrivilegeProvider {
 
     public static final MapCodec<BlockProvider> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
                     Codec.STRING.fieldOf("stage").forGetter(BlockProvider::getStage),
-                    RegistryCodecs.homogeneousList(Registries.BLOCK).fieldOf("privileges").forGetter(p -> p.privileges),
-                    Codec.either(BlockStateOverride.CODEC, ResourceLocationPatch.CODEC).fieldOf("replacement").forGetter(p -> p.replacement),
+                    RegistryCodecs.homogeneousList(Registries.BLOCK).fieldOf("privilege").forGetter(p -> p.privileges),
+                    Codec.either(
+                            Codec.withAlternative(
+                                    BlockStateOverride.CODEC,
+                                    ResourceLocation.CODEC.xmap(
+                                            id -> BlockStateOverride.of(BuiltInRegistries.BLOCK.get(id).defaultBlockState()),
+                                            override -> BuiltInRegistries.BLOCK.getKey(override.base().getBlock())
+                                    )
+                            ),
+                            ResourceLocationPatch.CODEC
+                    ).fieldOf("replacement").forGetter(p -> p.replacement),
                     Codec.BOOL.optionalFieldOf("replaceItems", true).forGetter(p -> p.replaceItems)
             ).apply(instance, BlockProvider::new)
     );

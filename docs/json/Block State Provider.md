@@ -21,7 +21,7 @@ The following example replaces the upper half of an iron door if the player does
     }
   },
   // What the locked block state should be replaced with.
-  // Must be a block state override
+  // Must be a block state override or a resource location.
   "replacement": {
     // The resource location of the replacement block state
     "Name": "minecraft:oak_door",
